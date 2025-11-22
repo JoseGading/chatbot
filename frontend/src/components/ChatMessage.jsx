@@ -50,16 +50,16 @@ const ChatMessage = ({ message }) => {
   };
 
   return (
-    <div className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'} fade-in`}>
+    <div className={`flex gap-2 sm:gap-3 ${isUser ? 'justify-end' : 'justify-start'} fade-in px-2 sm:px-0`}>
       {!isUser && (
-        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shadow-lg animate-glow">
-          <Bot className="w-6 h-6 text-white" />
+        <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shadow-lg animate-glow">
+          <Bot className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
         </div>
       )}
       
-      <div className={`flex flex-col max-w-[70%] ${isUser ? 'items-end' : 'items-start'}`}>
+      <div className={`flex flex-col w-full max-w-[85%] sm:max-w-[75%] md:max-w-[70%] ${isUser ? 'items-end' : 'items-start'}`}>
         <div
-          className={`px-4 py-3 rounded-2xl shadow-lg ${
+          className={`px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl shadow-lg break-words ${
             isUser
               ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white rounded-br-sm'
               : 'bg-dark-800 text-gray-100 border border-primary-500/20 rounded-bl-sm'
@@ -84,10 +84,11 @@ const ChatMessage = ({ message }) => {
                       href={href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-primary-400 hover:text-primary-300 underline break-all"
+                      className="inline-flex items-baseline gap-1 text-primary-400 hover:text-primary-300 underline decoration-primary-400/50 hover:decoration-primary-300"
+                      style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}
                     >
-                      {children}
-                      <ExternalLink className="w-3 h-3 inline flex-shrink-0" />
+                      <span className="break-all">{children}</span>
+                      <ExternalLink className="w-3 h-3 flex-shrink-0 ml-0.5" />
                     </a>
                   ),
                   ul: ({ children }) => (
@@ -121,8 +122,8 @@ const ChatMessage = ({ message }) => {
       </div>
 
       {isUser && (
-        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-gray-600 to-gray-800 flex items-center justify-center shadow-lg">
-          <User className="w-6 h-6 text-white" />
+        <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-gray-600 to-gray-800 flex items-center justify-center shadow-lg">
+          <User className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
         </div>
       )}
     </div>
