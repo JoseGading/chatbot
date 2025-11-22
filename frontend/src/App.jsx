@@ -32,7 +32,7 @@ function App() {
   const inputRef = useRef(null);
 
   // N8N Webhook URL - Langsung terintegrasi dengan workflow Anda
-  const webhookUrl = 'http://localhost:5678/webhook/chat-blogger';
+  const webhookUrl = 'https://desssdev.app.n8n.cloud/webhook/chat-blogger';
 
   useEffect(() => {
     loadChatHistory();
@@ -264,3 +264,4 @@ function App() {
 }
 
 export default App;
+
