@@ -248,36 +248,98 @@ function App() {
                   
                   {/* Suggested Questions */}
                   <div className="w-full max-w-2xl mb-6 sm:mb-8">
-                    <p className="text-sm text-gray-400 mb-4 text-center">💡 Coba tanyakan:</p>
+                    <p className="text-sm text-gray-400 mb-3 text-center">💡 Coba tanyakan:</p>
+                    <div className="flex flex-wrap justify-center gap-2">
+                      <button
+                        onClick={() => {
+                          setInput('Beli akun Instagram');
+                          inputRef.current?.focus();
+                        }}
+                        className="px-3 py-1.5 bg-primary-500/10 hover:bg-primary-500/20 border border-primary-500/30 
+                                 text-primary-300 rounded-full text-xs sm:text-sm transition-all hover:scale-105"
+                      >
+                        Beli akun Instagram
+                      </button>
+                      <button
+                        onClick={() => {
+                          setInput('Beli akun Facebook');
+                          inputRef.current?.focus();
+                        }}
+                        className="px-3 py-1.5 bg-primary-500/10 hover:bg-primary-500/20 border border-primary-500/30 
+                                 text-primary-300 rounded-full text-xs sm:text-sm transition-all hover:scale-105"
+                      >
+                        Beli akun Facebook
+                      </button>
+                      <button
+                        onClick={() => {
+                          setInput('Beli akun Gmail');
+                          inputRef.current?.focus();
+                        }}
+                        className="px-3 py-1.5 bg-primary-500/10 hover:bg-primary-500/20 border border-primary-500/30 
+                                 text-primary-300 rounded-full text-xs sm:text-sm transition-all hover:scale-105"
+                      >
+                        Beli akun Gmail
+                      </button>
+                      <button
+                        onClick={() => {
+                          setInput('Beli akun Twitter');
+                          inputRef.current?.focus();
+                        }}
+                        className="px-3 py-1.5 bg-primary-500/10 hover:bg-primary-500/20 border border-primary-500/30 
+                                 text-primary-300 rounded-full text-xs sm:text-sm transition-all hover:scale-105"
+                      >
+                        Beli akun Twitter
+                      </button>
+                      <button
+                        onClick={() => {
+                          setInput('Info harga dan paket');
+                          inputRef.current?.focus();
+                        }}
+                        className="px-3 py-1.5 bg-primary-500/10 hover:bg-primary-500/20 border border-primary-500/30 
+                                 text-primary-300 rounded-full text-xs sm:text-sm transition-all hover:scale-105"
+                      >
+                        Info harga & paket
+                      </button>
+                      <button
+                        onClick={() => {
+                          setInput('Cara pemesanan');
+                          inputRef.current?.focus();
+                        }}
+                        className="px-3 py-1.5 bg-primary-500/10 hover:bg-primary-500/20 border border-primary-500/30 
+                                 text-primary-300 rounded-full text-xs sm:text-sm transition-all hover:scale-105"
+                      >
+                        Cara pemesanan
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-3xl">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 w-full max-w-3xl">
                     <button
                       onClick={() => sendQuickMessage('Apa saja produk yang tersedia di ACCSTORAGE?')}
                       disabled={loading}
-                      className="bg-dark-800/50 border border-primary-500/20 p-4 rounded-xl hover:border-primary-500/50 hover:bg-dark-800/70 transition-all cursor-pointer text-left group disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="bg-dark-800/50 border border-primary-500/20 p-3 sm:p-4 rounded-xl hover:border-primary-500/50 hover:bg-dark-800/70 transition-all cursor-pointer text-left group disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <MessageSquare className="w-6 h-6 text-primary-400 mb-3 group-hover:scale-110 transition-transform" />
-                      <p className="text-white font-semibold text-base mb-1">Tanya Produk</p>
-                      <p className="text-gray-400 text-xs leading-relaxed">Informasi lengkap produk kami</p>
+                      <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6 text-primary-400 mb-2 group-hover:scale-110 transition-transform" />
+                      <p className="text-white font-semibold text-sm sm:text-base mb-0.5 sm:mb-1">Tanya Produk</p>
+                      <p className="text-gray-400 text-xs leading-snug">Informasi lengkap produk kami</p>
                     </button>
                     <button
                       onClick={() => sendQuickMessage('Berapa harga produk di ACCSTORAGE?')}
                       disabled={loading}
-                      className="bg-dark-800/50 border border-primary-500/20 p-4 rounded-xl hover:border-primary-500/50 hover:bg-dark-800/70 transition-all cursor-pointer text-left group disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="bg-dark-800/50 border border-primary-500/20 p-3 sm:p-4 rounded-xl hover:border-primary-500/50 hover:bg-dark-800/70 transition-all cursor-pointer text-left group disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <Sparkles className="w-6 h-6 text-primary-400 mb-3 group-hover:scale-110 transition-transform" />
-                      <p className="text-white font-semibold text-base mb-1">Cek Harga</p>
-                      <p className="text-gray-400 text-xs leading-relaxed">Dapatkan info harga terbaru</p>
+                      <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-primary-400 mb-2 group-hover:scale-110 transition-transform" />
+                      <p className="text-white font-semibold text-sm sm:text-base mb-0.5 sm:mb-1">Cek Harga</p>
+                      <p className="text-gray-400 text-xs leading-snug">Dapatkan info harga terbaru</p>
                     </button>
                     <button
                       onClick={() => sendQuickMessage('Bagaimana cara cek status pesanan saya?')}
                       disabled={loading}
-                      className="bg-dark-800/50 border border-primary-500/20 p-4 rounded-xl hover:border-primary-500/50 hover:bg-dark-800/70 transition-all cursor-pointer text-left group disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="bg-dark-800/50 border border-primary-500/20 p-3 sm:p-4 rounded-xl hover:border-primary-500/50 hover:bg-dark-800/70 transition-all cursor-pointer text-left group disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <History className="w-6 h-6 text-primary-400 mb-3 group-hover:scale-110 transition-transform" />
-                      <p className="text-white font-semibold text-base mb-1">Status Order</p>
-                      <p className="text-gray-400 text-xs leading-relaxed">Lacak pesanan Anda</p>
+                      <History className="w-5 h-5 sm:w-6 sm:h-6 text-primary-400 mb-2 group-hover:scale-110 transition-transform" />
+                      <p className="text-white font-semibold text-sm sm:text-base mb-0.5 sm:mb-1">Status Order</p>
+                      <p className="text-gray-400 text-xs leading-snug">Lacak pesanan Anda</p>
                     </button>
                   </div>
                 </div>
@@ -323,34 +385,6 @@ function App() {
                     <Send className="w-5 h-5" />
                   </button>
                 </div>
-                
-                <button
-                  onClick={startNewSession}
-                  disabled={messages.length === 0}
-                  className="w-12 h-12 flex items-center justify-center
-                           bg-green-500/10 text-green-400 rounded-xl 
-                           hover:bg-green-500/20 border border-green-500/30
-                           disabled:opacity-30 disabled:cursor-not-allowed
-                           transition-all duration-200 hover:scale-105 active:scale-95
-                           flex-shrink-0"
-                  title="New Chat Session"
-                >
-                  <MessageSquare className="w-5 h-5" />
-                </button>
-                
-                <button
-                  onClick={exportChat}
-                  disabled={messages.length === 0}
-                  className="w-12 h-12 flex items-center justify-center
-                           bg-primary-500/10 text-primary-400 rounded-xl 
-                           hover:bg-primary-500/20 border border-primary-500/30
-                           disabled:opacity-30 disabled:cursor-not-allowed
-                           transition-all duration-200 hover:scale-105 active:scale-95
-                           flex-shrink-0"
-                  title="Export Chat"
-                >
-                  <Download className="w-5 h-5" />
-                </button>
               </div>
               
               <div className="text-center text-xs text-gray-500">
