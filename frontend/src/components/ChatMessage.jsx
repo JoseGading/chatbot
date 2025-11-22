@@ -50,32 +50,32 @@ const ChatMessage = ({ message }) => {
   };
 
   return (
-    <div className={`flex gap-2 sm:gap-3 ${isUser ? 'justify-end' : 'justify-start'} fade-in px-2 sm:px-0`}>
+    <div className={`flex gap-2 ${isUser ? 'justify-end' : 'justify-start'} fade-in`}>
       {!isUser && (
-        <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shadow-lg animate-glow">
-          <Bot className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
+        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shadow-md">
+          <Bot className="w-5 h-5 text-white" />
         </div>
       )}
       
-      <div className={`flex flex-col w-full max-w-[85%] sm:max-w-[75%] md:max-w-[70%] ${isUser ? 'items-end' : 'items-start'}`}>
+      <div className={`flex flex-col max-w-[80%] sm:max-w-[70%] ${isUser ? 'items-end' : 'items-start'}`}>
         <div
-          className={`px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl shadow-lg break-words ${
+          className={`px-4 py-3 rounded-2xl shadow-md ${
             isUser
-              ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white rounded-br-sm'
-              : 'bg-dark-800 text-gray-100 border border-primary-500/20 rounded-bl-sm'
+              ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white rounded-br-md'
+              : 'bg-dark-800 text-gray-100 border border-primary-500/20 rounded-bl-md'
           }`}
         >
           {isUser ? (
-            <p className="text-sm md:text-base whitespace-pre-wrap break-words">
+            <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">
               {linkifyText(message.content)}
             </p>
           ) : (
-            <div className="prose prose-invert prose-sm md:prose-base max-w-none">
+            <div className="prose prose-invert prose-sm max-w-none">
               <ReactMarkdown
                 children={preprocessMarkdown(message.content)}
                 components={{
                   p: ({ children }) => (
-                    <p className="text-sm md:text-base mb-2 last:mb-0 whitespace-pre-wrap break-words">
+                    <p className="text-sm leading-relaxed mb-2 last:mb-0 whitespace-pre-wrap break-words">
                       {children}
                     </p>
                   ),
@@ -84,11 +84,10 @@ const ChatMessage = ({ message }) => {
                       href={href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-baseline gap-1 text-primary-400 hover:text-primary-300 underline decoration-primary-400/50 hover:decoration-primary-300"
-                      style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}
+                      className="text-primary-400 hover:text-primary-300 underline inline-flex items-center gap-1"
                     >
                       <span className="break-all">{children}</span>
-                      <ExternalLink className="w-3 h-3 flex-shrink-0 ml-0.5" />
+                      <ExternalLink className="w-3 h-3 flex-shrink-0" />
                     </a>
                   ),
                   ul: ({ children }) => (
@@ -113,7 +112,7 @@ const ChatMessage = ({ message }) => {
           )}
         </div>
         
-        <span className="text-xs text-gray-500 mt-1 px-1">
+        <span className="text-xs text-gray-500 mt-1.5 px-1">
           {formatDistanceToNow(timestamp, { 
             addSuffix: true,
             locale: id 
@@ -122,8 +121,8 @@ const ChatMessage = ({ message }) => {
       </div>
 
       {isUser && (
-        <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-gray-600 to-gray-800 flex items-center justify-center shadow-lg">
-          <User className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
+        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-gray-600 to-gray-800 flex items-center justify-center shadow-md">
+          <User className="w-5 h-5 text-white" />
         </div>
       )}
     </div>
