@@ -35,8 +35,8 @@ export const saveChatMessage = async (message, reply, sessionId, userId) => {
   }
 };
 
-// Get chat history - untuk user tertentu
-export const getChatHistory = async (userId, limitCount = 50) => {
+// Get chat history - untuk user tertentu atau semua (admin)
+export const getChatHistory = async (userId = null, limitCount = 50) => {
   try {
     const q = query(
       collection(db, 'chatLogs'),
@@ -47,7 +47,7 @@ export const getChatHistory = async (userId, limitCount = 50) => {
     const messages = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
-      // Filter by userId jika ada
+      // Filter by userId jika ada, kalau tidak (admin) tampilkan semua
       if (!userId || data.userId === userId) {
         messages.push({ id: doc.id, ...data });
       }
