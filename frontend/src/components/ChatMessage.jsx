@@ -7,7 +7,7 @@ const ChatMessage = ({ message }) => {
   const isUser = message.type === 'user';
   const timestamp = message.timestamp ? new Date(message.timestamp) : new Date();
 
-  // Auto-detect and linkify URLs
+  // Auto-detect and linkify URLs for user messages
   const linkifyText = (text) => {
     if (!text) return text;
     
@@ -30,6 +30,22 @@ const ChatMessage = ({ message }) => {
         );
       }
       return <span key={index}>{part}</span>;
+    });
+  };
+
+  // Convert plain URLs to markdown links for AI messages
+  const preprocessMarkdown = (text) => {
+    if (!text) return text;
+    
+    // Regex to find URLs that are NOT already in markdown link format
+    const urlRegex = /(?<!\]\()https?:\/\/[^\s<>]+/g;
+    
+    return text.replace(urlRegex, (url) => {
+      // Remove trailing punctuation that shouldn't be part of URL
+      const cleanUrl = url.replace(/[.,!?;:]+$/, '');
+      const punctuation = url.slice(cleanUrl.length);
+      
+      return `[${cleanUrl}](${cleanUrl})${punctuation}`;
     });
   };
 
@@ -56,6 +72,7 @@ const ChatMessage = ({ message }) => {
           ) : (
             <div className="prose prose-invert prose-sm md:prose-base max-w-none">
               <ReactMarkdown
+                children={preprocessMarkdown(message.content)}
                 components={{
                   p: ({ children }) => (
                     <p className="text-sm md:text-base mb-2 last:mb-0 whitespace-pre-wrap break-words">
@@ -67,9 +84,10 @@ const ChatMessage = ({ message }) => {
                       href={href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-primary-400 hover:text-primary-300 underline"
+                      className="inline-flex items-center gap-1 text-primary-400 hover:text-primary-300 underline break-all"
                     >
                       {children}
+                      <ExternalLink className="w-3 h-3 inline flex-shrink-0" />
                     </a>
                   ),
                   ul: ({ children }) => (
@@ -89,9 +107,7 @@ const ChatMessage = ({ message }) => {
                       </code>
                     ),
                 }}
-              >
-                {message.content}
-              </ReactMarkdown>
+              />
             </div>
           )}
         </div>
