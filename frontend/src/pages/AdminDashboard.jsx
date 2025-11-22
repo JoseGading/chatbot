@@ -37,7 +37,8 @@ const AdminDashboard = () => {
 
   const loadChatLogs = async () => {
     setLoading(true);
-    const logs = await getChatHistory(500);
+    // Pass null untuk load SEMUA chat dari semua user (admin view)
+    const logs = await getChatHistory(null, 500);
     setChatLogs(logs);
     setFilteredLogs(logs);
     setLoading(false);
@@ -86,9 +87,10 @@ const AdminDashboard = () => {
   };
 
   const exportToCSV = () => {
-    const headers = ['Timestamp', 'Session ID', 'Message', 'Reply'];
+    const headers = ['Timestamp', 'User ID', 'Session ID', 'Message', 'Reply'];
     const rows = filteredLogs.map(log => [
       log.timestamp,
+      log.userId || 'N/A',
       log.sessionId,
       `"${log.message.replace(/"/g, '""')}"`,
       `"${log.reply.replace(/"/g, '""')}"`
@@ -110,8 +112,8 @@ const AdminDashboard = () => {
 
   // Statistics
   const totalChats = chatLogs.length;
-  const uniqueSessions = new Set(chatLogs.map(log => log.sessionId)).size;
-  const avgMessagesPerSession = totalChats > 0 ? (totalChats / uniqueSessions).toFixed(1) : 0;
+  const uniqueUsers = new Set(chatLogs.map(log => log.userId).filter(Boolean)).size;
+  const avgMessagesPerUser = totalChats > 0 && uniqueUsers > 0 ? (totalChats / uniqueUsers).toFixed(1) : 0;
 
   // Chart data - Messages per day
   const getChartData = () => {
@@ -186,10 +188,10 @@ const AdminDashboard = () => {
           <div className="bg-dark-800/50 backdrop-blur-lg rounded-xl p-6 border border-primary-500/20">
             <div className="flex items-center justify-between mb-2">
               <Users className="w-8 h-8 text-green-400" />
-              <span className="text-xs text-gray-400">Sessions</span>
+              <span className="text-xs text-gray-400">Users</span>
             </div>
-            <p className="text-3xl font-bold text-white">{uniqueSessions}</p>
-            <p className="text-sm text-gray-400 mt-1">Unique Sessions</p>
+            <p className="text-3xl font-bold text-white">{uniqueUsers}</p>
+            <p className="text-sm text-gray-400 mt-1">Unique Users</p>
           </div>
 
           <div className="bg-dark-800/50 backdrop-blur-lg rounded-xl p-6 border border-primary-500/20">
@@ -197,8 +199,8 @@ const AdminDashboard = () => {
               <TrendingUp className="w-8 h-8 text-yellow-400" />
               <span className="text-xs text-gray-400">Average</span>
             </div>
-            <p className="text-3xl font-bold text-white">{avgMessagesPerSession}</p>
-            <p className="text-sm text-gray-400 mt-1">Messages/Session</p>
+            <p className="text-3xl font-bold text-white">{avgMessagesPerUser}</p>
+            <p className="text-sm text-gray-400 mt-1">Messages/User</p>
           </div>
         </div>
 
@@ -279,7 +281,7 @@ const AdminDashboard = () => {
                     Timestamp
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                    Session
+                    User ID
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
                     Message
@@ -305,6 +307,7 @@ const AdminDashboard = () => {
                 ) : (
                   filteredLogs.map((log, index) => {
                     const logDate = log.createdAt?.toDate ? log.createdAt.toDate() : new Date(log.timestamp);
+                    const userIdShort = log.userId ? log.userId.split('_')[1]?.substring(0, 8) : 'N/A';
                     return (
                       <tr key={log.id || index} className="hover:bg-dark-900/30 transition-colors">
                         <td className="px-4 py-3 text-sm text-gray-300 whitespace-nowrap">
@@ -313,8 +316,13 @@ const AdminDashboard = () => {
                             <span className="text-xs text-gray-500">{format(logDate, 'HH:mm:ss')}</span>
                           </div>
                         </td>
-                        <td className="px-4 py-3 text-xs text-gray-400 font-mono">
-                          {log.sessionId.split('_')[1]?.substring(0, 8)}...
+                        <td className="px-4 py-3 text-xs font-mono">
+                          <div className="flex items-center gap-2">
+                            <span className="text-primary-400">{userIdShort}</span>
+                            {log.userId && (
+                              <span className="text-gray-600" title={log.userId}>...</span>
+                            )}
+                          </div>
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-300 max-w-xs">
                           <div className="line-clamp-2">{log.message}</div>
