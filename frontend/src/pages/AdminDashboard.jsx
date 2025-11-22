@@ -96,10 +96,15 @@ const AdminDashboard = () => {
   };
 
   const exportToCSV = () => {
+    if (!Array.isArray(chatLogs) || chatLogs.length === 0) return;
+    
     const headers = ['Timestamp', 'User ID', 'Session ID', 'Message', 'Reply'];
     const rows = chatLogs.map(log => [
-      log.timestamp, log.userId || 'N/A', log.sessionId,
-      `"${log.message.replace(/"/g, '""')}"`, `"${log.reply.replace(/"/g, '""')}"`
+      log?.timestamp || '', 
+      log?.userId || 'N/A', 
+      log?.sessionId || '',
+      `"${(log?.message || '').replace(/"/g, '""')}"`, 
+      `"${(log?.reply || '').replace(/"/g, '""')}"`
     ]);
     const csv = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
@@ -122,11 +127,15 @@ const AdminDashboard = () => {
       date.setDate(date.getDate() - i);
       last7Days[format(date, 'dd/MM')] = 0;
     }
-    chatLogs.forEach(log => {
-      const logDate = log.createdAt?.toDate ? log.createdAt.toDate() : new Date(log.timestamp);
-      const dateStr = format(logDate, 'dd/MM');
-      if (last7Days[dateStr] !== undefined) last7Days[dateStr]++;
-    });
+    if (Array.isArray(chatLogs)) {
+      chatLogs.forEach(log => {
+        if (log && (log.createdAt || log.timestamp)) {
+          const logDate = log.createdAt?.toDate ? log.createdAt.toDate() : new Date(log.timestamp);
+          const dateStr = format(logDate, 'dd/MM');
+          if (last7Days[dateStr] !== undefined) last7Days[dateStr]++;
+        }
+      });
+    }
     return Object.entries(last7Days).map(([date, count]) => ({ date, messages: count }));
   };
 
