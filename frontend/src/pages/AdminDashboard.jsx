@@ -45,12 +45,17 @@ const AdminDashboard = () => {
   };
 
   const groupChatsByUser = () => {
+    if (!Array.isArray(chatLogs)) {
+      setGroupedUsers({});
+      return;
+    }
+    
     let filtered = [...chatLogs];
     if (searchTerm) {
       filtered = filtered.filter(log =>
-        log.message.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        log.reply.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (log.userId && log.userId.toLowerCase().includes(searchTerm.toLowerCase()))
+        log?.message?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        log?.reply?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (log?.userId && log.userId.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
     if (selectedDate !== 'all') {
@@ -68,7 +73,7 @@ const AdminDashboard = () => {
     }
     const grouped = {};
     filtered.forEach(log => {
-      const userId = log.userId || 'anonymous';
+      const userId = log?.userId || 'anonymous';
       if (!grouped[userId]) grouped[userId] = [];
       grouped[userId].push(log);
     });
