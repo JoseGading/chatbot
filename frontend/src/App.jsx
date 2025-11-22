@@ -2,16 +2,10 @@ import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { 
   Send, 
-  Trash2, 
-  Download, 
-  Moon, 
-  Sun, 
   MessageSquare,
   Bot,
-  User,
   Sparkles,
-  History,
-  Settings
+  History
 } from 'lucide-react';
 import { saveChatMessage, getChatHistory } from './firebase';
 import { getUserId, getSessionId } from './utils/userSession';
