@@ -1,0 +1,150 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "chat-blogger",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        496,
+        -96
+      ],
+      "id": "36332022-103c-4f63-b876-8b4c20a5fdca",
+      "name": "Webhook",
+      "webhookId": "dc41200c-b302-47bd-a0ac-94133058c5a8"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"reply\": \"{{$json.reply}}\"\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1296,
+        -96
+      ],
+      "id": "70c3f868-bf5d-4db1-9306-fd9f35a280a0",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.1-8b-instant",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        792,
+        128
+      ],
+      "id": "4709ce7e-7338-452b-9830-0b68590871bd",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "nYf464pdCVbWAaAp",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{$json.body.message}}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "Kamu adalah asisten toko online bernama ACCSTORAGE. Gunakan bahasa Indonesia santai dan ramah, panggil pengguna dengan \"bang\" atau \"kak\". Jawab singkat (1-2 kalimat). Aturan:\n- Jika pengguna sapa (\"halo\", \"hai\", \"pagi\"), balas sapa + tawarkan bantuan.\n- Jika ucap terima kasih, balas hangat.\n- Jika tanya produk/harga/stok, arahkan ke: https://accstorage.com\n- Jika pesan tidak jelas, minta klarifikasi dengan sopan.\n"
+            },
+            {
+              "type": "HumanMessagePromptTemplate",
+              "message": "={{$json.message}}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        720,
+        -96
+      ],
+      "id": "43e110f6-8309-4504-9a7d-0871f2e83ad0",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      reply: $json[0]?.text || $json.text || $json.data?.[0]?.text || \"error: no text found\"\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1072,
+        -96
+      ],
+      "id": "4609fb31-bf15-4ada-95e8-3d8f7e0e750c",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dd17b45e0ee60c24863fd9de989e80d35a36664637fc132760a6509812b0b242"
+  }
+}
