@@ -199,7 +199,7 @@ function App() {
           {/* Messages Area */}
           <div className="flex-1 overflow-y-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 space-y-3 sm:space-y-4">
             <div className="max-w-4xl mx-auto">
-              {messages.length === 0 ? (
+              {(!messages || messages.length === 0) ? (
                 <div className="flex flex-col items-center justify-center h-full text-center py-10 sm:py-20 px-4">
                   <div className="bg-primary-500/10 p-6 sm:p-8 rounded-full mb-4 sm:mb-6 animate-pulse-slow">
                     <Bot className="w-16 h-16 sm:w-20 sm:h-20 text-primary-400" />
@@ -298,7 +298,7 @@ function App() {
                 </div>
               ) : (
                 <>
-                  {messages.map((message, index) => (
+                  {Array.isArray(messages) && messages.map((message, index) => (
                     <ChatMessage key={index} message={message} />
                   ))}
                   {loading && <TypingIndicator />}
