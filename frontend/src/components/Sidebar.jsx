@@ -1,12 +1,26 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { X, Trash2, Download, MessageSquare, Clock, TrendingUp, Info, ChevronDown, ChevronUp } from 'lucide-react';
+import { format } from 'date-fns';
 
-const Sidebar = ({ isOpen, onClose, messages, onClearChat, onExportChat }) => {
-  const [recentMessagesOpen, setRecentMessagesOpen] = useState(true);
+const Sidebar = ({ isOpen, onClose, messages, allHistory, currentSessionId, onSwitchSession, onNewSession, onExportChat }) => {
+  const [recentMessagesOpen, setRecentMessagesOpen] = useState(false);
   
   const messageCount = messages.length;
   const userMessages = messages.filter(m => m.type === 'user').length;
   const aiMessages = messages.filter(m => m.type === 'ai').length;
+
+  // Group all history by session
+  const sessionGroups = useMemo(() => {
+    const groups = {};
+    allHistory.forEach(item => {
+      const sid = item.sessionId;
+      if (!groups[sid]) {
+        groups[sid] = [];
+      }
+      groups[sid].push(item);
+    });
+    return groups;
+  }, [allHistory]);
 
   return (
     <>
@@ -42,24 +56,6 @@ const Sidebar = ({ isOpen, onClose, messages, onClearChat, onExportChat }) => {
               <X className="w-5 h-5 text-gray-400" />
             </button>
           </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-2 gap-2">
-            <div className="bg-dark-800/50 rounded-lg p-3 border border-primary-500/10">
-              <div className="flex items-center gap-2 mb-1">
-                <TrendingUp className="w-4 h-4 text-primary-400" />
-                <span className="text-xs text-gray-400">Total</span>
-              </div>
-              <p className="text-xl font-bold text-white">{messageCount}</p>
-            </div>
-            <div className="bg-dark-800/50 rounded-lg p-3 border border-primary-500/10">
-              <div className="flex items-center gap-2 mb-1">
-                <MessageSquare className="w-4 h-4 text-green-400" />
-                <span className="text-xs text-gray-400">User</span>
-              </div>
-              <p className="text-xl font-bold text-white">{userMessages}</p>
-            </div>
-          </div>
         </div>
 
         {/* Chat Sessions / Info */}
@@ -78,7 +74,7 @@ const Sidebar = ({ isOpen, onClose, messages, onClearChat, onExportChat }) => {
               </div>
             </div>
 
-            {messages.length > 0 && (
+            {Object.keys(sessionGroups).length > 0 && (
               <div className="space-y-2">
                 {/* Collapsible Header */}
                 <button
@@ -90,10 +86,10 @@ const Sidebar = ({ isOpen, onClose, messages, onClearChat, onExportChat }) => {
                   <div className="flex items-center gap-2">
                     <MessageSquare className="w-4 h-4 text-primary-400" />
                     <h3 className="text-xs font-semibold text-gray-300 uppercase tracking-wider">
-                      Recent Messages
+                      Chat Sessions
                     </h3>
                     <span className="text-xs text-gray-500 bg-dark-900/50 px-2 py-0.5 rounded-full">
-                      {messages.slice(-5).length}
+                      {Object.keys(sessionGroups).length}
                     </span>
                   </div>
                   {recentMessagesOpen ? (
@@ -103,39 +99,59 @@ const Sidebar = ({ isOpen, onClose, messages, onClearChat, onExportChat }) => {
                   )}
                 </button>
 
-                {/* Collapsible Content */}
+                {/* Collapsible Content - Sessions */}
                 {recentMessagesOpen && (
-                  <div className="space-y-2 animate-fadeIn">
-                    {messages.slice(-5).reverse().map((msg, idx) => (
-                      <div
-                        key={idx}
-                        className={`p-3 rounded-lg text-sm transition-all hover:scale-[1.02] ${
-                          msg.type === 'user'
-                            ? 'bg-primary-500/10 border border-primary-500/20 hover:bg-primary-500/15'
-                            : 'bg-dark-800/50 border border-primary-500/10 hover:bg-dark-800/70'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2 mb-1.5">
-                          <Clock className="w-3 h-3 text-gray-500 flex-shrink-0" />
-                          <span className="text-xs text-gray-500">
-                            {new Date(msg.timestamp).toLocaleTimeString('id-ID', {
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
-                          </span>
-                          <span className={`text-xs px-1.5 py-0.5 rounded ${
-                            msg.type === 'user'
-                              ? 'bg-primary-500/20 text-primary-300'
-                              : 'bg-green-500/20 text-green-300'
-                          }`}>
-                            {msg.type === 'user' ? 'You' : 'AI'}
-                          </span>
-                        </div>
-                        <p className="text-gray-300 line-clamp-2 text-xs leading-relaxed">
-                          {msg.content}
-                        </p>
-                      </div>
-                    ))}
+                  <div className="space-y-2 animate-fadeIn max-h-96 overflow-y-auto">
+                    {Object.entries(sessionGroups).reverse().map(([sessionId, sessionChats]) => {
+                      const isCurrentSession = sessionId === currentSessionId;
+                      const firstChat = sessionChats[0];
+                      const chatDate = firstChat.createdAt?.toDate ? firstChat.createdAt.toDate() : new Date(firstChat.timestamp);
+                      
+                      return (
+                        <button
+                          key={sessionId}
+                          onClick={() => {
+                            if (!isCurrentSession) {
+                              onSwitchSession(sessionId);
+                              onClose(); // Close sidebar on mobile after switching
+                            }
+                          }}
+                          disabled={isCurrentSession}
+                          className={`w-full text-left p-3 rounded-lg text-sm transition-all border group ${
+                            isCurrentSession
+                              ? 'bg-primary-500/20 border-primary-500/40 shadow-lg shadow-primary-500/10 cursor-default'
+                              : 'bg-dark-800/50 border-primary-500/10 hover:bg-dark-800/70 hover:border-primary-500/30 cursor-pointer'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2">
+                              <Clock className="w-3 h-3 text-gray-500 flex-shrink-0" />
+                              <span className="text-xs text-gray-400">
+                                {format(chatDate, 'dd/MM/yyyy HH:mm')}
+                              </span>
+                            </div>
+                            {isCurrentSession && (
+                              <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-400 border border-green-500/30">
+                                Active
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-xs text-gray-500">
+                              {sessionChats.length} messages
+                            </span>
+                            {!isCurrentSession && (
+                              <span className="text-xs text-primary-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                                Click to view →
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-gray-300 line-clamp-2 text-xs leading-relaxed">
+                            {firstChat.message}
+                          </p>
+                        </button>
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -168,35 +184,36 @@ const Sidebar = ({ isOpen, onClose, messages, onClearChat, onExportChat }) => {
         </div>
 
         {/* Sidebar Footer */}
-        <div className="p-4 border-t border-primary-500/20 space-y-2">
+        <div className="p-3 sm:p-4 border-t border-primary-500/20 space-y-2">
           <button
-            onClick={onExportChat}
+            onClick={onNewSession}
             disabled={messages.length === 0}
-            className="w-full px-4 py-2.5 bg-primary-500/10 text-primary-400 rounded-lg 
-                     hover:bg-primary-500/20 border border-primary-500/30
+            className="w-full px-3 sm:px-4 py-2.5 bg-green-500/10 text-green-400 rounded-lg 
+                     hover:bg-green-500/20 border border-green-500/30
                      disabled:opacity-30 disabled:cursor-not-allowed
                      transition-all duration-200 flex items-center justify-center gap-2
-                     text-sm font-medium"
+                     text-sm font-medium hover:scale-[1.02] active:scale-[0.98]"
+            title="Mulai topik baru, chat saat ini akan tersimpan"
           >
-            <Download className="w-4 h-4" />
-            Export Chat
+            <MessageSquare className="w-4 h-4" />
+            <span className="text-xs sm:text-sm">New Chat Session</span>
           </button>
           
           <button
-            onClick={onClearChat}
+            onClick={onExportChat}
             disabled={messages.length === 0}
-            className="w-full px-4 py-2.5 bg-red-500/10 text-red-400 rounded-lg 
-                     hover:bg-red-500/20 border border-red-500/30
+            className="w-full px-3 sm:px-4 py-2.5 bg-primary-500/10 text-primary-400 rounded-lg 
+                     hover:bg-primary-500/20 border border-primary-500/30
                      disabled:opacity-30 disabled:cursor-not-allowed
                      transition-all duration-200 flex items-center justify-center gap-2
-                     text-sm font-medium"
+                     text-sm font-medium hover:scale-[1.02] active:scale-[0.98]"
           >
-            <Trash2 className="w-4 h-4" />
-            Clear Chat
+            <Download className="w-4 h-4" />
+            <span className="text-xs sm:text-sm">Export Chat</span>
           </button>
 
           <div className="text-xs text-gray-500 text-center pt-2">
-            v1.0.0 • Made with ❤️
+            v1.1.0 • Made with ❤️
           </div>
         </div>
       </aside>
