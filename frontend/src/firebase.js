@@ -20,12 +20,13 @@ const db = getFirestore(app);
 const analytics = getAnalytics(app);
 
 // Save chat message to Firebase
-export const saveChatMessage = async (message, reply, sessionId) => {
+export const saveChatMessage = async (message, reply, sessionId, userId) => {
   try {
     await addDoc(collection(db, 'chatLogs'), {
       message,
       reply,
       sessionId,
+      userId,
       timestamp: new Date().toISOString(),
       createdAt: new Date()
     });
