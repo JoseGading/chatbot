@@ -48,22 +48,28 @@ function App() {
   };
 
   const loadChatHistory = async (targetSessionId = null) => {
-    const history = await getChatHistory(userId, 100);
-    
-    // Simpan semua history untuk sidebar
-    setAllHistory(history);
-    
-    if (history.length > 0) {
-      // Filter hanya chat dari session saat ini untuk main chat
-      const currentSession = targetSessionId || sessionId;
-      const sessionHistory = history.filter(item => item.sessionId === currentSession);
-      if (sessionHistory.length > 0) {
-        const formattedMessages = sessionHistory.flatMap(item => [
-          { type: 'user', content: item.message, timestamp: item.timestamp },
-          { type: 'ai', content: item.reply, timestamp: item.timestamp }
-        ]);
-        setMessages(formattedMessages);
+    try {
+      const history = await getChatHistory(userId, 100);
+      
+      // Simpan semua history untuk sidebar (pastikan array)
+      setAllHistory(Array.isArray(history) ? history : []);
+      
+      if (Array.isArray(history) && history.length > 0) {
+        // Filter hanya chat dari session saat ini untuk main chat
+        const currentSession = targetSessionId || sessionId;
+        const sessionHistory = history.filter(item => item?.sessionId === currentSession);
+        if (sessionHistory.length > 0) {
+          const formattedMessages = sessionHistory.flatMap(item => [
+            { type: 'user', content: item.message, timestamp: item.timestamp },
+            { type: 'ai', content: item.reply, timestamp: item.timestamp }
+          ]);
+          setMessages(formattedMessages);
+        }
       }
+    } catch (error) {
+      console.error('Error loading chat history:', error);
+      setAllHistory([]);
+      setMessages([]);
     }
   };
 
