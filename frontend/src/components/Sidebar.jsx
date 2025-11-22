@@ -1,6 +1,9 @@
-import { X, Trash2, Download, MessageSquare, Clock, TrendingUp, Info } from 'lucide-react';
+import { useState } from 'react';
+import { X, Trash2, Download, MessageSquare, Clock, TrendingUp, Info, ChevronDown, ChevronUp } from 'lucide-react';
 
 const Sidebar = ({ isOpen, onClose, messages, onClearChat, onExportChat }) => {
+  const [recentMessagesOpen, setRecentMessagesOpen] = useState(true);
+  
   const messageCount = messages.length;
   const userMessages = messages.filter(m => m.type === 'user').length;
   const aiMessages = messages.filter(m => m.type === 'ai').length;
@@ -77,30 +80,64 @@ const Sidebar = ({ isOpen, onClose, messages, onClearChat, onExportChat }) => {
 
             {messages.length > 0 && (
               <div className="space-y-2">
-                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-                  Recent Messages
-                </h3>
-                {messages.slice(-5).reverse().map((msg, idx) => (
-                  <div
-                    key={idx}
-                    className={`p-3 rounded-lg text-sm ${
-                      msg.type === 'user'
-                        ? 'bg-primary-500/10 border border-primary-500/20'
-                        : 'bg-dark-800/50 border border-primary-500/10'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2 mb-1">
-                      <Clock className="w-3 h-3 text-gray-500" />
-                      <span className="text-xs text-gray-500">
-                        {new Date(msg.timestamp).toLocaleTimeString('id-ID', {
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </span>
-                    </div>
-                    <p className="text-gray-300 line-clamp-2">{msg.content}</p>
+                {/* Collapsible Header */}
+                <button
+                  onClick={() => setRecentMessagesOpen(!recentMessagesOpen)}
+                  className="w-full flex items-center justify-between p-3 rounded-lg
+                           bg-dark-800/30 hover:bg-dark-800/50 border border-primary-500/10
+                           transition-all group"
+                >
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="w-4 h-4 text-primary-400" />
+                    <h3 className="text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                      Recent Messages
+                    </h3>
+                    <span className="text-xs text-gray-500 bg-dark-900/50 px-2 py-0.5 rounded-full">
+                      {messages.slice(-5).length}
+                    </span>
                   </div>
-                ))}
+                  {recentMessagesOpen ? (
+                    <ChevronUp className="w-4 h-4 text-gray-400 group-hover:text-primary-400 transition-colors" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-gray-400 group-hover:text-primary-400 transition-colors" />
+                  )}
+                </button>
+
+                {/* Collapsible Content */}
+                {recentMessagesOpen && (
+                  <div className="space-y-2 animate-fadeIn">
+                    {messages.slice(-5).reverse().map((msg, idx) => (
+                      <div
+                        key={idx}
+                        className={`p-3 rounded-lg text-sm transition-all hover:scale-[1.02] ${
+                          msg.type === 'user'
+                            ? 'bg-primary-500/10 border border-primary-500/20 hover:bg-primary-500/15'
+                            : 'bg-dark-800/50 border border-primary-500/10 hover:bg-dark-800/70'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 mb-1.5">
+                          <Clock className="w-3 h-3 text-gray-500 flex-shrink-0" />
+                          <span className="text-xs text-gray-500">
+                            {new Date(msg.timestamp).toLocaleTimeString('id-ID', {
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </span>
+                          <span className={`text-xs px-1.5 py-0.5 rounded ${
+                            msg.type === 'user'
+                              ? 'bg-primary-500/20 text-primary-300'
+                              : 'bg-green-500/20 text-green-300'
+                          }`}>
+                            {msg.type === 'user' ? 'You' : 'AI'}
+                          </span>
+                        </div>
+                        <p className="text-gray-300 line-clamp-2 text-xs leading-relaxed">
+                          {msg.content}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
