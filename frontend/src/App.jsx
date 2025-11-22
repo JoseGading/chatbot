@@ -304,8 +304,8 @@ function App() {
           </div>
 
           {/* Input Area */}
-          <div className="border-t border-primary-500/20 bg-dark-900/80 backdrop-blur-lg">
-            <div className="max-w-4xl mx-auto p-3 sm:p-4">
+          <div className="bg-dark-900/80 backdrop-blur-lg border-t border-primary-500/20 p-4 sm:p-6">
+            <div className="max-w-4xl mx-auto space-y-3">
               <div className="flex items-end gap-2 sm:gap-3">
                 <div className="flex-1 relative">
                   <textarea
@@ -316,12 +316,12 @@ function App() {
                     placeholder="Ketik pesan Anda..."
                     disabled={loading}
                     rows={1}
-                    className="w-full bg-dark-800 text-white rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 pr-10 sm:pr-12 text-sm sm:text-base
+                    className="w-full bg-dark-800 text-white rounded-2xl px-4 sm:px-5 py-3 sm:py-4 pr-12 sm:pr-14 text-sm sm:text-base
                              border border-primary-500/30 focus:border-primary-500 
                              focus:outline-none focus:ring-2 focus:ring-primary-500/50
                              disabled:opacity-50 disabled:cursor-not-allowed
-                             resize-none min-h-[44px] sm:min-h-[50px] max-h-[150px]
-                             transition-all duration-200"
+                             resize-none min-h-[52px] sm:min-h-[56px] max-h-[150px]
+                             transition-all duration-200 leading-relaxed"
                     style={{ 
                       height: 'auto',
                       minHeight: '50px'
@@ -330,42 +330,47 @@ function App() {
                   <button
                     onClick={sendMessage}
                     disabled={loading || !input.trim()}
-                    className="absolute right-1.5 sm:right-2 bottom-1.5 sm:bottom-2 p-2 sm:p-2.5 bg-primary-500 text-white 
-                             rounded-lg hover:bg-primary-600 disabled:opacity-50 
+                    className="absolute right-2 sm:right-3 bottom-2 sm:bottom-3 p-2.5 sm:p-3 bg-primary-500 text-white 
+                             rounded-xl hover:bg-primary-600 disabled:opacity-50 
                              disabled:cursor-not-allowed transition-all duration-200
-                             hover:scale-105 active:scale-95"
+                             hover:scale-105 active:scale-95 shadow-lg"
                   >
-                    <Send className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <Send className="w-5 h-5 sm:w-6 sm:h-6" />
                   </button>
                 </div>
                 
                 <button
                   onClick={startNewSession}
                   disabled={messages.length === 0}
-                  className="p-2.5 sm:p-3 bg-green-500/10 text-green-400 rounded-xl 
+                  className="p-3 sm:p-3.5 bg-green-500/10 text-green-400 rounded-xl 
                            hover:bg-green-500/20 border border-green-500/30
                            disabled:opacity-30 disabled:cursor-not-allowed
-                           transition-all duration-200 hover:scale-105 active:scale-95"
+                           transition-all duration-200 hover:scale-105 active:scale-95
+                           shadow-lg"
                   title="New Chat Session"
                 >
-                  <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
                 
                 <button
                   onClick={exportChat}
                   disabled={messages.length === 0}
-                  className="p-2.5 sm:p-3 bg-primary-500/10 text-primary-400 rounded-xl 
+                  className="p-3 sm:p-3.5 bg-primary-500/10 text-primary-400 rounded-xl 
                            hover:bg-primary-500/20 border border-primary-500/30
                            disabled:opacity-30 disabled:cursor-not-allowed
-                           transition-all duration-200 hover:scale-105 active:scale-95"
+                           transition-all duration-200 hover:scale-105 active:scale-95
+                           shadow-lg"
                   title="Export Chat"
                 >
-                  <Download className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <Download className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
               </div>
               
-              <div className="mt-2 text-center text-xs text-gray-500">
-                Powered by ACCSTORAGE AI • Press Enter to send
+              <div className="text-center">
+                <p className="text-xs text-gray-500">
+                  Powered by <span className="text-primary-400 font-semibold">ACCSTORAGE AI</span>
+                </p>
+                <p className="text-xs text-gray-600 mt-0.5">Press Enter to send</p>
               </div>
             </div>
           </div>
