@@ -248,69 +248,7 @@ function App() {
                   
                   {/* Suggested Questions */}
                   <div className="w-full max-w-2xl mb-6 sm:mb-8">
-                    <p className="text-sm text-gray-400 mb-3 text-left">💡 Coba tanyakan:</p>
-                    <div className="flex flex-wrap gap-2">
-                      <button
-                        onClick={() => {
-                          setInput('Beli akun Instagram');
-                          inputRef.current?.focus();
-                        }}
-                        className="px-4 py-2 bg-primary-500/10 hover:bg-primary-500/20 border border-primary-500/30 
-                                 text-primary-300 rounded-full text-sm transition-all hover:scale-105"
-                      >
-                        Beli akun Instagram
-                      </button>
-                      <button
-                        onClick={() => {
-                          setInput('Beli akun Facebook');
-                          inputRef.current?.focus();
-                        }}
-                        className="px-4 py-2 bg-primary-500/10 hover:bg-primary-500/20 border border-primary-500/30 
-                                 text-primary-300 rounded-full text-sm transition-all hover:scale-105"
-                      >
-                        Beli akun Facebook
-                      </button>
-                      <button
-                        onClick={() => {
-                          setInput('Beli akun Gmail');
-                          inputRef.current?.focus();
-                        }}
-                        className="px-4 py-2 bg-primary-500/10 hover:bg-primary-500/20 border border-primary-500/30 
-                                 text-primary-300 rounded-full text-sm transition-all hover:scale-105"
-                      >
-                        Beli akun Gmail
-                      </button>
-                      <button
-                        onClick={() => {
-                          setInput('Beli akun Twitter');
-                          inputRef.current?.focus();
-                        }}
-                        className="px-4 py-2 bg-primary-500/10 hover:bg-primary-500/20 border border-primary-500/30 
-                                 text-primary-300 rounded-full text-sm transition-all hover:scale-105"
-                      >
-                        Beli akun Twitter
-                      </button>
-                      <button
-                        onClick={() => {
-                          setInput('Info harga dan paket');
-                          inputRef.current?.focus();
-                        }}
-                        className="px-4 py-2 bg-primary-500/10 hover:bg-primary-500/20 border border-primary-500/30 
-                                 text-primary-300 rounded-full text-sm transition-all hover:scale-105"
-                      >
-                        Info harga & paket
-                      </button>
-                      <button
-                        onClick={() => {
-                          setInput('Cara pemesanan');
-                          inputRef.current?.focus();
-                        }}
-                        className="px-4 py-2 bg-primary-500/10 hover:bg-primary-500/20 border border-primary-500/30 
-                                 text-primary-300 rounded-full text-sm transition-all hover:scale-105"
-                      >
-                        Cara pemesanan
-                      </button>
-                    </div>
+                    <p className="text-sm text-gray-400 mb-4 text-center">💡 Coba tanyakan:</p>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-3xl">
