@@ -14,6 +14,7 @@ import {
   Settings
 } from 'lucide-react';
 import { saveChatMessage, getChatHistory } from './firebase';
+import { getUserId, getSessionId } from './utils/userSession';
 import ChatMessage from './components/ChatMessage';
 import TypingIndicator from './components/TypingIndicator';
 import Sidebar from './components/Sidebar';
@@ -23,14 +24,15 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [sessionId] = useState(() => `session_${Date.now()}`);
+  const [userId] = useState(() => getUserId());
+  const [sessionId] = useState(() => getSessionId());
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
   // N8N Webhook URL - Langsung terintegrasi dengan workflow Anda
-  const webhookUrl = 'https://desssdev.app.n8n.cloud/webhook/chat-blogger';
+  const webhookUrl = 'http://localhost:5678/webhook/chat-blogger';
 
   useEffect(() => {
     loadChatHistory();
@@ -45,7 +47,7 @@ function App() {
   };
 
   const loadChatHistory = async () => {
-    const history = await getChatHistory(50);
+    const history = await getChatHistory(userId, 50);
     if (history.length > 0) {
       const formattedMessages = history.flatMap(item => [
         { type: 'user', content: item.message, timestamp: item.timestamp },
@@ -81,8 +83,8 @@ function App() {
 
       setMessages(prev => [...prev, aiMessage]);
       
-      // Save to Firebase
-      await saveChatMessage(input, response.data.reply, sessionId);
+      // Save to Firebase with userId
+      await saveChatMessage(input, response.data.reply, sessionId, userId);
     } catch (error) {
       console.error('Error sending message:', error);
       const errorMessage = {
@@ -262,4 +264,3 @@ function App() {
 }
 
 export default App;
-
