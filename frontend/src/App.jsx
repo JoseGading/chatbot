@@ -120,6 +120,46 @@ function App() {
     }
   };
 
+  const sendQuickMessage = async (question) => {
+    if (loading) return;
+    
+    const userMessage = {
+      type: 'user',
+      content: question,
+      timestamp: new Date().toISOString()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setLoading(true);
+
+    try {
+      const response = await axios.post(webhookUrl, {
+        message: question
+      });
+
+      const aiMessage = {
+        type: 'ai',
+        content: response.data.reply || 'Maaf, tidak ada respons dari server.',
+        timestamp: new Date().toISOString()
+      };
+
+      setMessages(prev => [...prev, aiMessage]);
+      await saveChatMessage(question, response.data.reply, sessionId, userId);
+      setTimeout(() => loadChatHistory(), 500);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      const errorMessage = {
+        type: 'ai',
+        content: 'Maaf, terjadi kesalahan. Silakan coba lagi.',
+        timestamp: new Date().toISOString()
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setLoading(false);
+      inputRef.current?.focus();
+    }
+  };
+
   const switchToSession = async (targetSessionId) => {
     // Switch to selected session
     sessionStorage.setItem('accstorage_session_id', targetSessionId);
@@ -273,22 +313,34 @@ function App() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 w-full max-w-3xl">
-                    <div className="bg-dark-800/50 border border-primary-500/20 p-3 sm:p-4 rounded-lg hover:border-primary-500/50 transition-all cursor-pointer">
-                      <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6 text-primary-400 mb-2" />
-                      <p className="text-white font-medium text-sm sm:text-base">Tanya Produk</p>
-                      <p className="text-gray-400 text-xs sm:text-sm">Informasi lengkap produk kami</p>
-                    </div>
-                    <div className="bg-dark-800/50 border border-primary-500/20 p-3 sm:p-4 rounded-lg hover:border-primary-500/50 transition-all cursor-pointer">
-                      <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-primary-400 mb-2" />
-                      <p className="text-white font-medium text-sm sm:text-base">Cek Harga</p>
-                      <p className="text-gray-400 text-xs sm:text-sm">Dapatkan info harga terbaru</p>
-                    </div>
-                    <div className="bg-dark-800/50 border border-primary-500/20 p-3 sm:p-4 rounded-lg hover:border-primary-500/50 transition-all cursor-pointer">
-                      <History className="w-5 h-5 sm:w-6 sm:h-6 text-primary-400 mb-2" />
-                      <p className="text-white font-medium text-sm sm:text-base">Status Order</p>
-                      <p className="text-gray-400 text-xs sm:text-sm">Lacak pesanan Anda</p>
-                    </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-3xl">
+                    <button
+                      onClick={() => sendQuickMessage('Apa saja produk yang tersedia di ACCSTORAGE?')}
+                      disabled={loading}
+                      className="bg-dark-800/50 border border-primary-500/20 p-4 rounded-xl hover:border-primary-500/50 hover:bg-dark-800/70 transition-all cursor-pointer text-left group disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <MessageSquare className="w-6 h-6 text-primary-400 mb-3 group-hover:scale-110 transition-transform" />
+                      <p className="text-white font-semibold text-base mb-1">Tanya Produk</p>
+                      <p className="text-gray-400 text-xs leading-relaxed">Informasi lengkap produk kami</p>
+                    </button>
+                    <button
+                      onClick={() => sendQuickMessage('Berapa harga produk di ACCSTORAGE?')}
+                      disabled={loading}
+                      className="bg-dark-800/50 border border-primary-500/20 p-4 rounded-xl hover:border-primary-500/50 hover:bg-dark-800/70 transition-all cursor-pointer text-left group disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <Sparkles className="w-6 h-6 text-primary-400 mb-3 group-hover:scale-110 transition-transform" />
+                      <p className="text-white font-semibold text-base mb-1">Cek Harga</p>
+                      <p className="text-gray-400 text-xs leading-relaxed">Dapatkan info harga terbaru</p>
+                    </button>
+                    <button
+                      onClick={() => sendQuickMessage('Bagaimana cara cek status pesanan saya?')}
+                      disabled={loading}
+                      className="bg-dark-800/50 border border-primary-500/20 p-4 rounded-xl hover:border-primary-500/50 hover:bg-dark-800/70 transition-all cursor-pointer text-left group disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <History className="w-6 h-6 text-primary-400 mb-3 group-hover:scale-110 transition-transform" />
+                      <p className="text-white font-semibold text-base mb-1">Status Order</p>
+                      <p className="text-gray-400 text-xs leading-relaxed">Lacak pesanan Anda</p>
+                    </button>
                   </div>
                 </div>
               ) : (
