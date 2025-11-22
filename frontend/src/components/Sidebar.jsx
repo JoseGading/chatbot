@@ -2,23 +2,25 @@ import { useState, useMemo } from 'react';
 import { X, Trash2, Download, MessageSquare, Clock, TrendingUp, Info, ChevronDown, ChevronUp } from 'lucide-react';
 import { format } from 'date-fns';
 
-const Sidebar = ({ isOpen, onClose, messages, allHistory, currentSessionId, onSwitchSession, onNewSession, onExportChat }) => {
+const Sidebar = ({ isOpen, onClose, messages = [], allHistory = [], currentSessionId, onSwitchSession, onNewSession, onExportChat }) => {
   const [recentMessagesOpen, setRecentMessagesOpen] = useState(false);
   
-  const messageCount = messages.length;
-  const userMessages = messages.filter(m => m.type === 'user').length;
-  const aiMessages = messages.filter(m => m.type === 'ai').length;
+  const messageCount = messages?.length || 0;
+  const userMessages = messages?.filter(m => m.type === 'user')?.length || 0;
+  const aiMessages = messages?.filter(m => m.type === 'ai')?.length || 0;
 
   // Group all history by session
   const sessionGroups = useMemo(() => {
     const groups = {};
-    allHistory.forEach(item => {
-      const sid = item.sessionId;
-      if (!groups[sid]) {
-        groups[sid] = [];
-      }
-      groups[sid].push(item);
-    });
+    if (Array.isArray(allHistory)) {
+      allHistory.forEach(item => {
+        const sid = item.sessionId;
+        if (!groups[sid]) {
+          groups[sid] = [];
+        }
+        groups[sid].push(item);
+      });
+    }
     return groups;
   }, [allHistory]);
 
