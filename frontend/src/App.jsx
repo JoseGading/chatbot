@@ -5,7 +5,8 @@ import {
   MessageSquare,
   Bot,
   Sparkles,
-  History
+  History,
+  Download
 } from 'lucide-react';
 import { saveChatMessage, getChatHistory } from './firebase';
 import { getUserId, getSessionId } from './utils/userSession';
