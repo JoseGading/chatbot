@@ -34,8 +34,8 @@ export const saveChatMessage = async (message, reply, sessionId) => {
   }
 };
 
-// Get chat history
-export const getChatHistory = async (limitCount = 50) => {
+// Get chat history - untuk user tertentu
+export const getChatHistory = async (userId, limitCount = 50) => {
   try {
     const q = query(
       collection(db, 'chatLogs'),
@@ -45,7 +45,11 @@ export const getChatHistory = async (limitCount = 50) => {
     const querySnapshot = await getDocs(q);
     const messages = [];
     querySnapshot.forEach((doc) => {
-      messages.push({ id: doc.id, ...doc.data() });
+      const data = doc.data();
+      // Filter by userId jika ada
+      if (!userId || data.userId === userId) {
+        messages.push({ id: doc.id, ...data });
+      }
     });
     return messages.reverse();
   } catch (error) {
