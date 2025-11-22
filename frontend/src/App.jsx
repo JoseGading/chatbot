@@ -308,29 +308,24 @@ function App() {
             <div className="max-w-4xl mx-auto">
               <div className="flex items-center gap-2 mb-3">
                 <div className="flex-1 relative">
-                  <textarea
+                  <input
                     ref={inputRef}
+                    type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder="Ketik pesan Anda..."
                     disabled={loading}
-                    rows={1}
-                    className="w-full bg-dark-800 text-white rounded-2xl px-4 py-3 pr-14 text-base
+                    className="w-full h-12 bg-dark-800 text-white rounded-2xl px-4 pr-14 text-base
                              border border-primary-500/30 focus:border-primary-500 
                              focus:outline-none focus:ring-2 focus:ring-primary-500/50
                              disabled:opacity-50 disabled:cursor-not-allowed
-                             resize-none leading-relaxed
                              transition-all duration-200"
-                    style={{ 
-                      height: '48px',
-                      maxHeight: '120px'
-                    }}
                   />
                   <button
                     onClick={sendMessage}
                     disabled={loading || !input.trim()}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center
+                    className="absolute right-1.5 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center
                              bg-primary-500 text-white rounded-xl hover:bg-primary-600 
                              disabled:opacity-50 disabled:cursor-not-allowed 
                              transition-all duration-200 hover:scale-105 active:scale-95"
@@ -369,7 +364,7 @@ function App() {
               </div>
               
               <div className="text-center text-xs text-gray-500">
-                Powered by <span className="text-primary-400 font-medium">ACCSTORAGE AI</span> • Press Enter to send
+                Powered by <span className="text-primary-400 font-medium">ACCSTORAGE.COM</span> • Press Enter to send
               </div>
             </div>
           </div>
